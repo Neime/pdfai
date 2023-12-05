@@ -1,0 +1,9 @@
+version: "3.9"
+
+services:
+    php-fpm:
+        build:
+          context: .
+          target: app_php
+        volumes:
+            - .:/var/www/html
