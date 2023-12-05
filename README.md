@@ -1,4 +1,8 @@
-# php OKR AI
+# PDFAI - Extract Data From PDF with AI
+
+PDFAI is a package to help to extract data from a pdf with GenAI 
+
+It's help to upload pdf file and ask to extract data from it.
 
 ## Installation
 ```
@@ -6,6 +10,15 @@ make start
 make composer c="install"
 ```
 
+## Usage
+
+```php
+$getPdf = new \PDFAI\GetPdfContent();
+$content = $getPdf('path/of/my/file.pdf');
+
+$extractor = new OpenAIExtractor();
+$data = (new \PDFAI\ExtractDataFromPdf($extractor, $content);
+```
 
 ## Website Localhost
 (only for endtoend test)
@@ -20,6 +33,10 @@ make unit c="tests"
 
 ### Test get pdf content
 
-Run docker to open access to tests/endtoend/index.php in http://localhost:8080/
-Open tests/endtoend/index.html in navigator
-Upload a file
+1) Run docker to open access to tests/endtoend/index.php in http://localhost:8080/
+
+2) Open tests/endtoend/index.html in navigator
+
+3) Upload a file
+
+4) wait response
