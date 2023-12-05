@@ -72,7 +72,7 @@ final class GetPdfContentTest extends TestCase
             $result->getErrorCode()
         );
         $this->assertEquals(
-            ['url' => __DIR__.'/file.txt'],
+            ['path' => __DIR__.'/file.txt'],
             $result->getErrorDetails()
         );
     }
