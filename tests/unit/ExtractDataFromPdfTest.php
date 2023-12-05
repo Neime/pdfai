@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace Test\Unit;
+namespace PDFAI\Tests\Unit;
 
-use App\UploadType;
-use App\GetPdfContent;
-use App\ExtractDataFromPdf;
-use App\ExtractedDatum;
-use App\ExtractorInterface;
+use PDFAI\UploadType;
+use PDFAI\GetPdfContent;
+use PDFAI\ExtractDataFromPdf;
+use PDFAI\ExtractedDatum;
+use PDFAI\ExtractorInterface;
 use PHPUnit\Framework\TestCase;
 
 final class ExtractDataFromPdfTest extends TestCase

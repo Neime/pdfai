@@ -3,10 +3,10 @@
 header("Access-Control-Allow-Origin: *");
 
 include __DIR__.'/../../vendor/autoload.php';
-use App\GetPdfContent;
-use App\ExtractDataFromPdf;
-use Test\EndToEnd\FakeExtractor;
-use App\UploadType;
+use PDFAI\GetPdfContent;
+use PDFAI\ExtractDataFromPdf;
+use PDFAI\Tests\EndToEnd\FakeExtractor;
+use PDFAI\UploadType;
 
 // Check if the form was submitted
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {

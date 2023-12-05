@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Test\Unit;
+namespace PDFAI\Tests\Unit;
 
-use App\GetPdfContent;
-use App\UploadType;
+use PDFAI\GetPdfContent;
+use PDFAI\UploadType;
 use PHPUnit\Framework\TestCase;
 
 final class GetPdfContentTest extends TestCase

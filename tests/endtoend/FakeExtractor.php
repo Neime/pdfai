@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Test\EndToEnd;
+namespace PDFAI\Tests\EndToEnd;
 
-use App\ExtractedDatum;
-use App\ExtractorInterface;
+use PDFAI\ExtractedDatum;
+use PDFAI\ExtractorInterface;
 
 class FakeExtractor implements ExtractorInterface
 {
