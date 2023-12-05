@@ -4,6 +4,8 @@ header("Access-Control-Allow-Origin: *");
 
 include __DIR__.'/../../vendor/autoload.php';
 use App\GetPdfContent;
+use App\ExtractDataFromPdf;
+use Test\EndToEnd\FakeExtractor;
 use App\UploadType;
 
 // Check if the form was submitted
@@ -17,6 +19,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         if ($result->isSuccess()) {
             $print['data'] = null;
         }
+
+        $result = (new ExtractDataFromPdf(new FakeExtractor()))(['name', 'firstname'], $result->getData());
+
+        if ($result->isSuccess()) {
+            $print['data'] = null;
+        }
+
+        foreach ($result->getData() as $extractedDatum) {
+            $print['data'][] = $extractedDatum->print();
+        }
+
         
         echo json_encode($print);
     } else {

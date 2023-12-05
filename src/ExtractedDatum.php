@@ -27,4 +27,16 @@ final class ExtractedDatum
     {
         return $this->value;
     }
+
+    /**
+     * @return array<string, string>
+     */
+    public function print(): array
+    {
+        return [
+            'type' => $this->type,
+            'name' => $this->name,
+            'value' => $this->value,
+        ];
+    }
 }

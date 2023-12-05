@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Test;
+namespace Test\Unit;
 
 use App\UploadType;
 use App\GetPdfContent;
@@ -27,7 +27,7 @@ final class ExtractDataFromPdfTest extends TestCase
     public function test_it_extract_data_from_pdf(): void
     {
         $this->extractor->method('extract')->willReturn(new ExtractedDatum('my_extractor', 'name', 'Doe'));
-        
+
         $result = ($this->useCase)(['name', 'firstname'], (new GetPdfContent())(UploadType::LOCAL, __DIR__.'/file.pdf')->getData());
 
         $this->assertTrue($result->isSuccess());

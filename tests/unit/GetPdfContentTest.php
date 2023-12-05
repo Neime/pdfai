@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Test;
+namespace Test\Unit;
 
 use App\GetPdfContent;
 use App\UploadType;
