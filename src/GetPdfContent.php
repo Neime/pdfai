@@ -6,9 +6,9 @@ namespace PDFAI;
 
 final class GetPdfContent
 {
-    public const string FILE_NOT_FOUND = 'file_not_found';
-    public const string FILE_EMPTY = 'file_empty';
-    public const string FILE_NOT_PDF = 'file_not_pdf';
+    public const FILE_NOT_FOUND = 'file_not_found';
+    public const FILE_EMPTY = 'file_empty';
+    public const FILE_NOT_PDF = 'file_not_pdf';
 
     public function __invoke(UploadType $type, string $path): Result
     {

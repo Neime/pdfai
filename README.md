@@ -27,6 +27,12 @@ $data = (new \PDFAI\ExtractDataFromPdf($extractor, $content);
 ## Run Test
 
 ### Run PhpUnit
+
+Add .env with your openai API key
+```
+OPENAI_API_KEY=your-api-key
+```
+
 ```
 make unit c="tests"
 ```
