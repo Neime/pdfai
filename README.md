@@ -40,6 +40,6 @@ make unit c="tests"
 
 2) Open tests/endtoend/index.html in navigator
 
-3) Upload a file
+3) Upload a file and ask data to be extract
 
 4) wait response
