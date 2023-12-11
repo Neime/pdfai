@@ -2,7 +2,10 @@
 
 declare(strict_types=1);
 
-namespace PDFAI;
+namespace PDFAI\Domain\UseCase;
+
+use PDFAI\Util\Result;
+use PDFAI\Domain\UploadType;
 
 final class GetPdfContent
 {
@@ -10,6 +13,9 @@ final class GetPdfContent
     public const FILE_EMPTY = 'file_empty';
     public const FILE_NOT_PDF = 'file_not_pdf';
 
+    /**
+     * @return Result<string>
+     */
     public function __invoke(UploadType $type, string $path): Result
     {
         $hasFile = match ($type) {

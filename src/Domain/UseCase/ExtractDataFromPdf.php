@@ -2,9 +2,11 @@
 
 declare(strict_types=1);
 
-namespace PDFAI;
+namespace PDFAI\Domain\UseCase;
 
+use PDFAI\Util\Result;
 use PDFAI\Extractor\ExtractorException;
+use PDFAI\Extractor\ExtractorInterface;
 
 final class ExtractDataFromPdf
 {
@@ -14,15 +16,15 @@ final class ExtractDataFromPdf
     ) {
     }
 
+    /**
+     * @return Result<array<ExtractedDatum>>
+     */
     public function __invoke(array $data, string $pdfContent): Result
     {
         try {
-            $extractedData = array_map(
-                fn (string $datum) => $this->extractor->extract(
-                    $datum,
-                    $pdfContent,
-                ),
-                $data
+            $extractedData = $this->extractor->extract(
+                $data,
+                $pdfContent,
             );
         } catch (ExtractorException $e) {
             return Result::failure(self::PDF_EXTRACTOR_ERROR, [

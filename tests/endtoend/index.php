@@ -3,33 +3,31 @@
 header("Access-Control-Allow-Origin: *");
 
 include __DIR__.'/../../vendor/autoload.php';
-use PDFAI\GetPdfContent;
-use PDFAI\ExtractDataFromPdf;
-use PDFAI\Tests\EndToEnd\FakeExtractor;
-use PDFAI\UploadType;
+
+use PDFAI\Extractor\OpenAIExtractor;
+use PDFAI\PDFAI;
+use Dotenv\Dotenv;
 
 // Check if the form was submitted
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // Check if a file was selected for upload
-    if (isset($_FILES['file'])) {
-        $result = (new GetPdfContent())(UploadType::LOCAL, $_FILES['file']['tmp_name']);
+    if (isset($_FILES['fileInput'])) {
+        $dotenv = Dotenv::createImmutable('./');
+        $dotenv->load();
 
-        $print = $result->print();
-
-        if ($result->isSuccess()) {
-            $print['data'] = null;
+        $pdfai = new PDFAI(new OpenAIExtractor($_ENV['OPENAI_API_KEY']));
+        
+        $print = [];
+        try {
+            $dataExtracted = $pdfai->extract($_POST['textInput'], $_FILES['fileInput']['tmp_name']);
+        } catch (\Exception $e) {
+            $print = ['error' => $e->getMessage()];
         }
+        
 
-        $result = (new ExtractDataFromPdf(new FakeExtractor()))(['name', 'firstname'], $result->getData());
-
-        if ($result->isSuccess()) {
-            $print['data'] = null;
+        foreach ($dataExtracted as $extractedDatum) {
+            $print[] = $extractedDatum->print();
         }
-
-        foreach ($result->getData() as $extractedDatum) {
-            $print['data'][] = $extractedDatum->print();
-        }
-
         
         echo json_encode($print);
     } else {

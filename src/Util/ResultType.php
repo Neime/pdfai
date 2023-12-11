@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace PDFAI;
+namespace PDFAI\Util;
 
 enum ResultType: string
 {

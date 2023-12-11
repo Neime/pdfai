@@ -2,14 +2,14 @@
 
 declare(strict_types=1);
 
-namespace PDFAI\Tests\Unit;
+namespace PDFAI\Tests\Unit\Domain\UseCase;
 
-use PDFAI\UploadType;
-use PDFAI\GetPdfContent;
-use PDFAI\ExtractDataFromPdf;
-use PDFAI\ExtractedDatum;
-use PDFAI\ExtractorInterface;
+use PDFAI\Domain\UploadType;
 use PHPUnit\Framework\TestCase;
+use PDFAI\Domain\ExtractedDatum;
+use PDFAI\Domain\UseCase\GetPdfContent;
+use PDFAI\Extractor\ExtractorInterface;
+use PDFAI\Domain\UseCase\ExtractDataFromPdf;
 
 final class ExtractDataFromPdfTest extends TestCase
 {
@@ -26,12 +26,12 @@ final class ExtractDataFromPdfTest extends TestCase
 
     public function test_it_extract_data_from_pdf(): void
     {
-        $this->extractor->method('extract')->willReturn(new ExtractedDatum('my_extractor', 'name', 'Doe'));
+        $this->extractor->method('extract')->willReturn([new ExtractedDatum('my_extractor', 'name', 'Doe')]);
 
-        $result = ($this->useCase)(['name', 'firstname'], (new GetPdfContent())(UploadType::LOCAL, __DIR__.'/file.pdf')->getData());
-
+        $result = ($this->useCase)(['name'], (new GetPdfContent())(UploadType::LOCAL, __DIR__.'/../../file.pdf')->getData());
+        
         $this->assertTrue($result->isSuccess());
-        $this->assertEquals(2, count($result->getData()));
+        $this->assertEquals(1, count($result->getData()));
         $this->assertEquals(
             ExtractedDatum::class,
             get_class($result->getData()[0])

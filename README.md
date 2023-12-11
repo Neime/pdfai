@@ -13,11 +13,8 @@ make composer c="install"
 ## Usage
 
 ```php
-$getPdf = new \PDFAI\GetPdfContent();
-$content = $getPdf('path/of/my/file.pdf');
-
-$extractor = new OpenAIExtractor();
-$data = (new \PDFAI\ExtractDataFromPdf($extractor, $content);
+$pdfai = new PDFAI(new OpenAIExtractor('your-api-key'));
+$dataExtracted = $pdfai->extract(['name', 'firstname'], './file.pdf');
 ```
 
 ## Website Localhost

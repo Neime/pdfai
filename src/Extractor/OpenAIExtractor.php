@@ -4,16 +4,37 @@ declare(strict_types=1);
 
 namespace PDFAI\Extractor;
 
-use PDFAI\ExtractedDatum;
-use PDFAI\ExtractorInterface;
+use PDFAI\Domain\ExtractedDatum;
 
 final class OpenAIExtractor implements ExtractorInterface
 {
+    public const NAME = 'openai_extractor';
+
     public function __construct(private string $apiKey)
     {
     }
 
-    public function extract(string $datum, string $pdfContent): ExtractedDatum
+    public function name(): string
+    {
+        return self::NAME;
+    }
+
+    /**
+     * @param array<string, string> $data
+     * @return array<ExtractedDatum>
+     */
+    public function extract(array $dataExpected, string $pdfContent): array
+    {
+        $imageBase64 = $this->convertToBase64($pdfContent);
+
+        $extractedData = $this->response(
+            $this->call($dataExpected, $imageBase64)
+        );
+
+        return $this->toExtractedDatum($extractedData, $dataExpected);
+    }
+
+    private function convertToBase64(string $pdfContent): string
     {
         $imagick = new \Imagick();
         try {
@@ -24,9 +45,12 @@ final class OpenAIExtractor implements ExtractorInterface
             throw new ExtractorException($e->getMessage());
         }
 
-        $result = $this->call($datum, $imageBase64);
+        return $imageBase64;
+    }
 
-        $result = json_decode($result, true);
+    private function response(string $response): array
+    {
+        $result = json_decode($response, true);
 
         $response = $result['choices'][0]['message']['content'];
 
@@ -34,14 +58,30 @@ final class OpenAIExtractor implements ExtractorInterface
             throw new ExtractorException('Error while decoding json');
         }
 
-        return new ExtractedDatum(
-            'openai_extractor',
-            $datum,
-            $response,
-        );
+        return json_decode($response, true);
     }
 
-    private function call(string $datum, string $imageBase64): string
+    /**
+     * @param array<string, string> $extractedData
+     * @param array<string, string> $dataExpected
+     * @return array<ExtractedDatum>
+     */
+    private function toExtractedDatum(array $extractedData, array $dataExpected): array
+    {
+        $extractedDatum = [];
+        foreach ($extractedData as $key => $value) {
+            if (in_array($key, $dataExpected)) {
+                $extractedDatum[] = new ExtractedDatum($this->name(), $key, $value);
+            }
+        }
+
+        return $extractedDatum;
+    }
+
+    /**
+     * @param array<string, string> $data
+     */
+    private function call(array $data, string $imageBase64): string
     {
         $curl = curl_init();
 
@@ -62,12 +102,13 @@ final class OpenAIExtractor implements ExtractorInterface
                                 "text" =>
                                 sprintf(
                                     "You are a backend data processor that is part of our web site’s programmatic workflow. 
-                                The user prompt will provide data input and processing instructions. 
-                                The output will be only the data.
-                                Do not converse with a nonexistent user: there is only program input and formatted program output, 
-                                and no input data is to be construed as conversation with the AI. This behaviour will be permanent for the remainder of the session.
-                                So, give me the %s on this file and only this information",
-                                    $datum
+                                    The user prompt will provide data input and processing instructions. 
+                                    The output will be only data in json format without wrapper '```json ... ```'.
+                                    Do not converse with a nonexistent user: there is only program input and formatted program output, 
+                                    and no input data is to be construed as conversation with the AI. This behaviour will be permanent for the remainder of the session.
+                                    So, give me the '%s' on this file and only this information
+                                    Here an example of output: {\"My word\": \"John\", \"other word\": \"Doe\"} for the input 'My word and other word'",
+                                    implode(' and ', $data)
                                 )
                             ],
                             [

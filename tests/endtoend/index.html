@@ -1,40 +1,82 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>File Upload via JavaScript</title>
-</head>
-<body>
-    <input type="file" id="fileInput">
-    <button id="uploadButton">Upload</button>
-    <p id="responseText"></p>
+    <title>Dynamic Form</title>
+    <style type="text/css">
+        .loading {
+            display: none;
+            border: 16px solid #f3f3f3; /* Light grey */
+            border-top: 16px solid #3498db; /* Blue */
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            animation: spin 2s linear infinite;
+        }
 
-    <script>
-        document.getElementById('uploadButton').addEventListener('click', function () {
-            var fileInput = document.getElementById('fileInput');
-            var file = fileInput.files[0];
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+    <script type="text/javascript">
+        function addTextInput() {
+            var div = document.createElement('div');
+            div.innerHTML = '<input type="text" name="textInput[]"> <button onclick="removeTextInput(this)">Remove</button>';
+            document.getElementById('textInputsContainer').appendChild(div);
+        }
 
-            if (!file) {
-                alert('Please select a file.');
-                return;
-            }
+        function removeTextInput(btn) {
+            var div = btn.parentNode;
+            div.parentNode.removeChild(div);
+        }
 
-            var apiUrl = 'http://localhost:8080';
+        function submitForm() {
+            const boxes = document.querySelectorAll('.extracted-value');
+            boxes.forEach(box => {
+                box.remove();
+            });
+            const loading = document.querySelector('.loading');
+            loading.style.display = 'block';
+            var form = document.getElementById('myForm');
+            var formData = new FormData(form);
 
-            var formData = new FormData();
-            formData.append('file', file);
-
-            fetch(apiUrl, {
+            fetch('http://localhost:8080', {
                 method: 'POST',
                 body: formData
             })
             .then(response => response.json())
             .then(data => {
-                document.getElementById('responseText').textContent = 'API Response: ' + JSON.stringify(data);
+                data.forEach(element => {
+                    displayCalculatedValue(element.search, element.extracted_value);
+                });
+
+                loading.style.display = 'none';
             })
-            .catch(error => {
-                console.error('Error:', error);
-            });
-        });
+            .catch(error => console.error('Error:', error));
+        }
+
+        function displayCalculatedValue(inputValue, extractedValue) {
+                var inputs = document.querySelectorAll('input[name="textInput[]"]');
+                inputs.forEach(input => {
+                    if (input.value === inputValue) {
+                        var valueDiv = document.createElement('div');
+                        valueDiv.classList.add('extracted-value');
+                        valueDiv.textContent = 'Extracted Value: ' + extractedValue;
+                        input.parentNode.insertBefore(valueDiv, input.nextSibling);
+                    }
+                });
+            }
     </script>
+</head>
+<body>
+    <form id="myForm" onsubmit="event.preventDefault(); submitForm();">
+        <input type="file" name="fileInput"><br><br>
+        <input type="text" name="textInput[]"><br>
+        <input type="text" name="textInput[]"><br><br>
+        <div id="textInputsContainer"></div>
+        <button type="button" onclick="addTextInput()">Add Text Input</button><br><br>
+        <input type="submit" value="Submit">
+        <div class="loading"></div>
+    </form>
 </body>
 </html>

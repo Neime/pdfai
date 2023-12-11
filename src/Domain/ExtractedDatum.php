@@ -2,14 +2,14 @@
 
 declare(strict_types=1);
 
-namespace PDFAI;
+namespace PDFAI\Domain;
 
 final class ExtractedDatum
 {
     public function __construct(
         private string $type,
-        private string $name,
-        private string $value,
+        private string $search,
+        private string $extractedValue,
     ) {
     }
 
@@ -18,14 +18,14 @@ final class ExtractedDatum
         return $this->type;
     }
 
-    public function name(): string
+    public function search(): string
     {
-        return $this->name;
+        return $this->search;
     }
 
-    public function value(): string
+    public function extractedValue(): string
     {
-        return $this->value;
+        return $this->extractedValue;
     }
 
     /**
@@ -35,8 +35,8 @@ final class ExtractedDatum
     {
         return [
             'type' => $this->type,
-            'name' => $this->name,
-            'value' => $this->value,
+            'search' => $this->search,
+            'extracted_value' => $this->extractedValue,
         ];
     }
 }
