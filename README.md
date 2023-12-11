@@ -4,6 +4,12 @@ PDFAI is a package to help to extract data from a pdf with GenAI
 
 It's help to upload pdf file and ask to extract data from it.
 
+
+
+https://github.com/Neime/pdfai/assets/5405182/d433f46e-cbfb-4def-a0af-2e0171382064
+
+
+
 ## Installation
 ```
 make start
